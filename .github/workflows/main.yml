@@ -1,32 +1,25 @@
-name: DeployToGitHubPages
-env:
-  PUBLISH_DIR: bin/Release/netstandard2.1/publish/wwwroot
+name: gh-pages
 
-# Controls when the action will run
-on:
-  push:
-    branches: [ master ]
+on: [push]
 
 jobs:
   build:
+
     runs-on: ubuntu-latest
+
     steps:
-    - uses: actions/checkout@v2
-
-    - name: Publish app
-      run: dotnet publish -c Release
-
-    - name: Rewrite base href
-      uses: SteveSandersonMS/ghaction-rewrite-base-href@v1
+    - uses: actions/checkout@v1
+    - name: Setup .NET Core
+      uses: actions/setup-dotnet@v1
       with:
-        html_path: ${{ env.PUBLISH_DIR }}/index.html
-        base_href: /UserNamer/
-
-    - name: GitHub Pages
-      if: success()
-      uses: crazy-max/ghaction-github-pages@v1.5.1
+        dotnet-version: 3.1.201
+    - name: Publish with dotnet
+      run: dotnet publish --configuration Release --output build
+    - name: Deploy to Github Pages
+      uses: JamesIves/github-pages-deploy-action@releases/v3
       with:
-        target_branch: gh-pages
-        build_dir: ${{ env.PUBLISH_DIR }}
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
+        BASE_BRANCH: master # The branch the action should deploy from.
+        BRANCH: gh-pages-from-actions # The branch the action should deploy to.
+        FOLDER: build/wwwroot # The folder the action should deploy.
+        CLEAN: true
