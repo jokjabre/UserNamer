@@ -7,6 +7,12 @@
     <base href="/UserNamer/" />
     <link href="css/bootstrap/bootstrap.min.css" rel="stylesheet" />
     <link href="css/app.css" rel="stylesheet" />
+
+    <link href="css/main-dice.css" rel="stylesheet" />
+    <link href="css/dice.css" rel="stylesheet" />
+
+    <link href="_content/Blazored.Modal/blazored-modal.css" rel="stylesheet" />
+
 </head>
 <body>
     <app>Loading...</app>
@@ -24,10 +30,10 @@
         // When the single page app is loaded further down in this file,
         // the correct url will be waiting in the browser's history for
         // the single page app to route accordingly.
-        (function (l) {
+        (function(l) {
             if (l.search) {
                 var q = {};
-                l.search.slice(1).split('&').forEach(function (v) {
+                l.search.slice(1).split('&').forEach(function(v) {
                     var a = v.split('=');
                     q[a[0]] = a.slice(1).join('=').replace(/~and~/g, '&');
                 });
@@ -49,5 +55,16 @@
         <a class="dismiss">🗙</a>
     </div>
     <script src="_framework/blazor.webassembly.js"></script>
+
+    <script src="libs/cannon.min.js"></script>
+    <script src="libs/three.min.js"></script>
+
+    <script type="text/javascript" src="js/teal.js"></script>
+    <script type="text/javascript" src="js/dice.js"></script>
+    <script type="text/javascript" src="js/main-dice.js"></script>
+    <!--<script type="text/javascript" defer="defer">
+        alert("aaaaa");
+        dice_initialize(document.body);
+    </script>-->
 </body>
 </html>
