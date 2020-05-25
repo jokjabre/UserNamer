@@ -489,7 +489,7 @@
         return res;
     }
 
-    function get_dice_value(dice) {
+    this.dice_box.prototype.get_dice_value = function (dice) {
         var vector = new THREE.Vector3(0, 0, dice.dice_type == 'd4' ? -1 : 1);
         var closest_face, closest_angle = Math.PI * 2;
         for (var i = 0, l = dice.geometry.faces.length; i < l; ++i) {
@@ -505,10 +505,10 @@
         return matindex;
     }
 
-    function get_dice_values(dices) {
+    this.dice_box.prototype.get_dice_values = function (dices) {
         var values = [];
         for (var i = 0, l = dices.length; i < l; ++i) {
-            values.push(get_dice_value(dices[i]));
+            values.push(this.get_dice_value(dices[i]));
         }
         return values;
     }
@@ -518,7 +518,7 @@
             ++this.iteration;
             this.world.step(that.frame_rate);
         }
-        return get_dice_values(this.dices);
+        return this.get_dice_values(this.dices);
     }
 
     this.dice_box.prototype.__animate = function(threadid) {
@@ -547,7 +547,7 @@
         this.last_time = this.last_time ? time : (new Date()).getTime();
         if (this.running == threadid && this.check_if_throw_finished()) {
             this.running = false;
-            if (this.callback) this.callback.call(this, get_dice_values(this.dices));
+            if (this.callback) this.callback.call(this, this.get_dice_values(this.dices));
         }
         if (this.running == threadid) {
             (function(t, tid, uat) {
@@ -653,11 +653,14 @@
 
         var inter = raycaster.intersectObjects(this.scene.children);
         if (inter.length && inter[0].object.dice_type) {
-            inter[0].object.visible = false;
-            this.renderer.render(this.scene, this.camera);
 
             return inter[0].object;
         }
+        return undefined;
+    }
+
+    this.dice_box.prototype.re_render = function () {
+        this.renderer.render(this.scene, this.camera);
     }
 
     this.dice_box.prototype.draw_selector = function() {

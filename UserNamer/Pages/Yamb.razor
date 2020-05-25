@@ -1,0 +1,77 @@
+﻿@page "/yamb"
+
+@using Blazored.Modal.Services;
+@using UserNamer.Classes.Models
+
+@inject IModalService Modal
+@inject IJSRuntime JSRuntime
+
+<h3>Yamb</h3>
+
+<button @onclick="@(() => Modal.Show<UserNamer.Pages.Dice>("Modal Popup Example"))" class="btn btn-primary">View </button>
+<span>@GetSelectedDices()</span>
+
+
+<div id="dice-screen" class="col-12">
+
+    <div id="left-panel" class="col-2">
+
+    </div>
+
+    <div id="dice-container" class="col-8">
+        <div id="control_panel" class="control_panel">
+            <p id="loading_text">Loading libraries, please wait a bit...</p>
+        </div>
+        <div id="selector_div" style="display: none">
+            <input type="text" id="set" value="4d6" /><br />
+            <button style="margin-left: 0.6em" id="throw">throw</button>
+        </div>
+        <div id="canvas"></div>
+    </div>
+
+    <div id="right-panel" class="col-2">
+
+    </div>
+</div>
+
+@code {
+
+    private DotNetObjectReference<Yamb> objRef;
+    private YambModel yambModel = new YambModel();
+
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await JSRuntime.InvokeVoidAsync("dice_initialize");
+            objRef = DotNetObjectReference.Create(this);
+
+            await JSRuntime.InvokeAsync<string>(
+                "interop_functions.setObject",
+                objRef);
+        }
+        await base.OnAfterRenderAsync(firstRender);
+    }
+
+    private string GetSelectedDices()
+    {
+        if(yambModel.Selected.Any())
+        {
+            return yambModel.Selected.Select(y => y.ToString()).Aggregate((x, y) => x += "," + y);
+        }
+        return "";
+    }
+
+    [JSInvokable("OnDiceSelected")]
+    public void OnDiceSelected(int dice)
+    {
+        yambModel.Selected.Add(dice);
+        StateHasChanged();
+    }
+
+    public void Dispose()
+    {
+        objRef?.Dispose();
+    }
+}

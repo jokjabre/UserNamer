@@ -94,12 +94,20 @@ function dice_initialize() {
         //     box.rolling = false;
         //     return;
         // }
-        var name = box.search_dice_by_mouse(ev);
-        if (name != undefined) {
-            var notation = $t.dice.parse_notation(set.value);
-            notation.set.push(name);
-            set.value = $t.dice.stringify_notation(notation);
-            on_set_change();
+        //var name = box.search_dice_by_mouse(ev);
+        //if (name != undefined) {
+        //    var notation = $t.dice.parse_notation(set.value);
+        //    notation.set.push(name);
+        //    set.value = $t.dice.stringify_notation(notation);
+        //    on_set_change();
+        //}
+
+        var selected = box.search_dice_by_mouse(ev);
+        if (selected) {
+            selected.visible = false;
+            box.re_render();
+
+            window.interop_functions.dice_selected(box.get_dice_value(selected));
         }
     });
 

@@ -1,5 +1,5 @@
 ﻿@page "/dice"
-@inject IJSRuntime JSRuntime;
+@inject IJSRuntime JSRuntime
 
 <div id="dice-screen" class="col-12">
 
@@ -27,8 +27,11 @@
 
         protected override async Task OnAfterRenderAsync(bool firstRender)
         {
-            await JSRuntime.InvokeVoidAsync("dice_initialize");
-
+            if (firstRender)
+            {
+                await JSRuntime.InvokeVoidAsync("dice_initialize");
+            }
             await base.OnAfterRenderAsync(firstRender);
         }
+
     }
