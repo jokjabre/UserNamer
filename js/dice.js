@@ -229,7 +229,7 @@
     this.material_options = {
         specular: 0x172022,
         color: 0xf0f0f0,
-        shininess: 40,
+        shininess: 20,
         shading: THREE.FlatShading,
     };
     this.label_color = '#aaaaaa';
@@ -250,7 +250,7 @@
     this.scale = 50;
 
     this.create_d6 = function() {
-        if (!this.d6_geometry) this.d6_geometry = this.create_d6_geometry(this.scale * 0.9);
+        if (!this.d6_geometry) this.d6_geometry = this.create_d6_geometry(this.scale);
         if (!this.dice_material) this.dice_material = new THREE.MeshFaceMaterial(
                 this.create_dice_materials(this.standart_d20_dice_face_labels, this.scale / 2, 1.0));
         return new THREE.Mesh(this.d6_geometry, this.dice_material);
@@ -318,7 +318,7 @@
 
         this.world.gravity.set(0, 0, -9.8 * 800);
         this.world.broadphase = new CANNON.NaiveBroadphase();
-        this.world.solver.iterations = 16;
+        this.world.solver.iterations = 20;
 
         var ambientLight = new THREE.AmbientLight(that.ambient_light_color);
         this.scene.add(ambientLight);
@@ -502,8 +502,6 @@
             }
         }
         var matindex = closest_face.materialIndex - 1;
-        if (dice.dice_type == 'd100') matindex *= 10;
-        if (dice.dice_type == 'd10' && matindex == 0) matindex = 10;
         return matindex;
     }
 
@@ -643,11 +641,23 @@
 
     this.dice_box.prototype.search_dice_by_mouse = function(ev) {
         var m = $t.get_mouse_coords(ev);
-        var intersects = (new THREE.Raycaster(this.camera.position, 
-                    (new THREE.Vector3((m.x - this.cw) / this.aspect,
-                                       1 - (m.y - this.ch) / this.aspect, this.w / 9))
-                    .sub(this.camera.position).normalize())).intersectObjects(this.dices);
-        if (intersects.length) return intersects[0].object.userData;
+
+        var mouse = new THREE.Vector3();
+        var raycaster = new THREE.Raycaster();
+
+        var canvasBounds = this.renderer.context.canvas.getBoundingClientRect();
+        mouse.x = ((event.clientX - canvasBounds.left) / (canvasBounds.right - canvasBounds.left)) * 2 - 1;
+        mouse.y = - ((event.clientY - canvasBounds.top) / (canvasBounds.bottom - canvasBounds.top)) * 2 + 1;
+        mouse.z = 0.5;
+        raycaster.setFromCamera(mouse, this.camera);
+
+        var inter = raycaster.intersectObjects(this.scene.children);
+        if (inter.length && inter[0].object.dice_type) {
+            inter[0].object.visible = false;
+            this.renderer.render(this.scene, this.camera);
+
+            return inter[0].object;
+        }
     }
 
     this.dice_box.prototype.draw_selector = function() {
