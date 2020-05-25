@@ -37,7 +37,7 @@
 }
 
 #dice-container {
-
+    border: 1px black solid;
 }
 
 #canvas {
