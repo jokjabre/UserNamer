@@ -7,10 +7,10 @@ function dice_initialize() {
 
     var canvas = $t.id('canvas');
 
-    container.style.width = window.innerWidth * 0.8 + 'px';
-    container.style.height = window.innerHeight * 0.8 + 'px';
-    canvas.style.width = "100%";
-    canvas.style.height = "100%";
+    //container.style.width = window.innerWidth * 0.8 + 'px';
+    //container.style.height = window.innerHeight * 0.8 + 'px';
+    //canvas.style.width = "100%";
+    //canvas.style.height = "100%";
     //var label = $t.id('label');
     var set = $t.id('set');
     // var selector_div = $t.id('selector_div');
@@ -51,10 +51,10 @@ function dice_initialize() {
 
     $t.bind(window, 'resize', function() {
 
-        container.style.width = window.innerWidth * 0.8 + 'px';
-        container.style.height = window.innerHeight * 0.8 + 'px';
-        canvas.style.width =  "100%";
-        canvas.style.height = "100%";
+        //container.style.width = window.innerWidth * 0.8 + 'px';
+        //container.style.height = window.innerHeight * 0.8 + 'px';
+        //canvas.style.width =  "100%";
+        //canvas.style.height = "100%";
         box.reinit(canvas, { w: 500, h: 300 });
     });
 
@@ -84,10 +84,10 @@ function dice_initialize() {
         // info_div.style.display = 'inline-block';
     }
 
-    box.bind_mouse(screen, notation_getter, before_roll, after_roll);
+    box.bind_mouse(canvas, notation_getter, before_roll, after_roll);
     box.bind_throw($t.id('throw'), notation_getter, before_roll, after_roll);
 
-    $t.bind(screen, ['mouseup', 'touchend'], function(ev) {
+    $t.bind(canvas, ['mouseup', 'touchend'], function(ev) {
         ev.stopPropagation();
         // if (selector_div.style.display == 'none') {
         //     if (!box.rolling) show_selector();

@@ -172,6 +172,15 @@ teal.get_mouse_coords = function(ev) {
     return { x: ev.clientX, y: ev.clientY };
 }
 
+teal.get_cursor_pos = function (ev) {
+    var rect = ev.currentTarget.getBoundingClientRect();
+
+    return {
+        x: ev.clientX - rect.left, // left offset
+        y: ev.clientY - rect.top //top offset
+    };
+}
+
 teal.deferred = function() {
     var solved = false, callbacks = [], args = [];
     function solve() {
